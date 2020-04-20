@@ -8,7 +8,6 @@
 
 # }}}
 
-
 # Workspace setup {{{ ====
 
 # Will need to "source" the intake files" to bring up the right R object / variables
@@ -25,4 +24,15 @@
 # Education Categories
 
 # }}}
+
+# Merge files {{{ ==== 
+
+# Merge both datasets will require them to have the same columns
+# Then they can be merged by rows
+c1_merge <- cohort1_data[svar]
+c2_merge <- cohort2_data[svar]
+combined_data <- bind_rows(c1_merge, c2_merge)
+
+# }}}
+
 
