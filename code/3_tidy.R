@@ -6,6 +6,11 @@
 	# Look at file called sample-coding-indices.sas
 	# Create new summary variables that match their pattern
 
+### DEFINITIONS
+	# Clinical covariates
+	# Demographics: age, sex, smoking, alcohol
+	# Obesity: weight, height, metabolic syndrome
+
 # }}}
 
 # Workspace setup {{{ ====
@@ -25,6 +30,10 @@ df$sex[df$sex == 1] <- 1 # Males = 1
 df$sex[df$sex == 2] <- 0 # Females recoded from 2 to 0
 
 # Age categories
+df$agecat[df$age < 45] <- 0
+df$agecat[df$age >= 45 & df$age < 65] <- 1
+df$agecat[df$age >= 65] <- 2
+df$agecat[is.na(df$age)] <- NA
 
 # Education Categories
 
