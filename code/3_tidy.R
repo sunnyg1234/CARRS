@@ -17,7 +17,12 @@
 
 # Demographic Tidying {{{ ====
 
+# New table for recoding
+df <- combined_data
+
 # Sex (male = 1, female = 0), may need transgender category
+df$sex[df$sex == 1] <- 1 # Males = 1
+df$sex[df$sex == 2] <- 0 # Females recoded from 2 to 0
 
 # Age categories
 
@@ -25,7 +30,7 @@
 
 # }}}
 
-# Merge files {{{ ==== 
+# Merge files {{{ ====
 
 # Merge both datasets will require them to have the same columns
 # Then they can be merged by rows
