@@ -1,7 +1,7 @@
 # PROGRESS {{{ ====
 
 ### TO DO
-	# Demographics need to include home ID and city ID
+	# Demographics need to include home ID and city ID and ward ID
 	# BMI?
 	# Labs?
 	# Can we classify CKD better? Baseline creatinine, CKD stage? Urinalysis? Urine protein?
@@ -11,8 +11,6 @@
 
 # Workspace setup {{{ ====
 
-# Set working directory
-setwd(dir= "/Users/sunnygupta/CARRS/data") # This is "okay" but is problematic for sharing code. Would like to see you use variable working directories or setting this external to the code itself when possible
 
 # Libraries (load before doing any data analysis)
 library(tidyverse)
@@ -22,8 +20,8 @@ library(tidyverse)
 # Intake {{{ ====
 
 # Read in quickly with read_*** function
-cohort1_data <- read_csv("cohort1-short.csv")
-cohort2_data <- read_csv("cohort2-short.csv")
+cohort1_data <- read_csv("../data/cohort1-short.csv")
+cohort2_data <- read_csv("../data/cohort2-short.csv")
 
 # }}}
 
