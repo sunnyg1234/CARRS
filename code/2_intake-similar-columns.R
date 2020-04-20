@@ -6,6 +6,7 @@
 	# Labs?
 	# Can we classify CKD better? Baseline creatinine, CKD stage? Urinalysis? Urine protein?
 	# Body weight = do we have any other measurements of body types? Any estimates on body fat? Like caliper measurements or arm size, etc?
+	# Labs to be added for cohort1 (Anish will find cohort 2)
 
 # }}}
 
@@ -224,7 +225,7 @@ cohort2_data$tob_smkexpo_wk <- cohort2_data$s2a_epdwe
 
 # }}}
 
-# Alcohol use for merging{{{ ====
+# Alcohol use for merging {{{ ====
 
 #Have you ever used alcohol?
 cohort1_data$alc_everused<- cohort1_data$alc_everused
