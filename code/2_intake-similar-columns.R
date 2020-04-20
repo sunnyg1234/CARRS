@@ -1,3 +1,14 @@
+# PROGRESS {{{ ====
+
+### TO DO
+	# Demographics need to include home ID and city ID
+	# BMI?
+	# Labs?
+	# Can we classify CKD better? Baseline creatinine, CKD stage? Urinalysis? Urine protein?
+	# Body weight = do we have any other measurements of body types? Any estimates on body fat? Like caliper measurements or arm size, etc?
+
+# }}}
+
 # Workspace setup {{{ ====
 
 # Set working directory
@@ -8,7 +19,6 @@ library(tidyverse)
 
 # }}}
 
-
 # Intake {{{ ====
 
 # Read in quickly with read_*** function
@@ -17,18 +27,16 @@ cohort2_data <- read_csv("cohort2-short.csv")
 
 # }}}
 
-# Sunny Section {{{ ====
+# Sunny/BMI Section {{{ ====
 
 #This adds a column to the data for BMI using the height and weight with proper conversions
 cohort1_data<- mutate(cohort1_data,BMI=(weight_kg/(height_cm/100)^2))
-
 
 # }}}
 
 # Demographics for Merging {{{ ====
 
-
-# Age 
+# Age
 cohort1_data$age <- cohort1_data$pd_age
 cohort2_data$age <- cohort2_data$s1a_age
 
@@ -37,31 +45,26 @@ cohort1_data$sex <- cohort1_data$pd_sex
 cohort2_data$sex <- cohort2_data$s1a_sex
 
 #Educational status
-
 cohort1_data$edu_stat <- cohort1_data$pd_edu_stat
 cohort2_data$edu_stat <- cohort2_data$s1a_est
 
-#Education years
+# Education years
 cohort1_data$edu_yrs <- cohort1_data$pd_edu_yrs
 cohort2_data$edu_yrs <- cohort2_data$s1a_fedu
 
-#Household income 
-
+#Household income
 cohort1_data$hh_income <- cohort1_data$pd_hhincome
 cohort2_data$hh_income <- cohort2_data$s1a_toin
 
-#employement status 
-
+#employement status
 cohort1_data$emp_stat <- cohort1_data$pd_emp_stat
 cohort2_data$emp_stat <- cohort2_data$s1a_emst
 
-
 #current occupation
-
 cohort1_data$curr_occ<- cohort1_data$pd_cur_occu
 cohort2_data$curr_occ <- cohort2_data$s1a_coc
 
-#}}}}}}}}}
+# }}}
 
 # Tobacco use for Merging {{{ ====
 
@@ -221,8 +224,7 @@ cohort2_data$tob_smkexpo<- cohort2_data$s2a_exp
 cohort1_data$tob_smkexpo_wk<- cohort1_data$tob_smkexpo_wk
 cohort2_data$tob_smkexpo_wk <- cohort2_data$s2a_epdwe
 
-#}}}}}}}}}
-
+# }}}
 
 # Alcohol use for merging{{{ ====
 
@@ -282,7 +284,7 @@ cohort2_data$alc_winefreq <- cohort2_data$s2b_fwiw
 cohort1_data$alc_wineqty<- cohort1_data$alc_wineqty
 cohort2_data$alc_wineqty <- cohort2_data$s2b_qwi
 
-#}}}}}}}}}}}}
+# }}}
 
 # Physical activity for Merging {{{ ====
 
@@ -323,7 +325,7 @@ cohort2_data$pa_walktime_hr <- cohort2_data$s2c_wah
 cohort1_data$pa_walktime_min<- cohort1_data$pa_walktime_min
 cohort2_data$pa_walktime_min <- cohort2_data$s2c_wam
 
-#}}}}}}}
+# }}}
 
 # Sleep for Merging {{{ ====
 
@@ -343,7 +345,7 @@ cohort2_data$slp_trblslp <- cohort2_data$s2d_ts
 cohort1_data$slp_nightdiff<- cohort1_data$slp_nightdiff
 cohort2_data$slp_nightdiff <- cohort2_data$s2d_wn
 
-#How often do you feel unrested during the day nomatter how many hours you sleep? 
+#How often do you feel unrested during the day nomatter how many hours you sleep?
 cohort1_data$slp_feelunrest<- cohort1_data$slp_feelunrest
 cohort2_data$slp_feelunrest <- cohort2_data$s2d_fun
 
@@ -355,7 +357,7 @@ cohort2_data$slp_notenough <- cohort2_data$s2d_esl
 cohort1_data$slp_pills<- cohort1_data$slp_pills
 cohort2_data$slp_pills <- cohort2_data$s2d_spi
 
-#}}}}}}
+# }}}
 
 # Diet for Merging {{{ ====
 
@@ -371,7 +373,7 @@ cohort2_data$dt_egg <- cohort2_data$s2e_e
 cohort1_data$dt_spldiet<- cohort1_data$dt_spldiet
 cohort2_data$dt_spldiet <- cohort2_data$s2e_sd
 
-#If yes, are you on a diabetic diet? 
+#If yes, are you on a diabetic diet?
 cohort1_data$dt_diabdiet<- cohort1_data$dt_diabdiet
 cohort2_data$dt_diabdiet <- cohort2_data$s2e_dd
 
@@ -379,10 +381,10 @@ cohort2_data$dt_diabdiet <- cohort2_data$s2e_dd
 cohort1_data$dt_wtreducediet<- cohort1_data$dt_wtreducediet
 cohort2_data$dt_wtreducediet <- cohort2_data$s2e_wrd
 
-#}}}}}}
+# }}}
 
 # HBP for Merging {{{ ====
-#Do you have high blood pressure? 
+#Do you have high blood pressure?
 cohort1_data$pd_hbp<- cohort1_data$pd_hbp
 cohort2_data$pd_hbp <- cohort2_data$s3a1_hbp
 
@@ -402,7 +404,7 @@ cohort2_data$hbp_trt_dietmod <- cohort2_data$s3a1_hbp
 cohort1_data$hbp_trt_phyexer<- cohort1_data$hbp_trt_phyexer
 cohort2_data$hbp_trt_phyexer <- cohort2_data$s3a1_thbpex
 
-#Are you taking any traditional medicine for your high blood pressure? 
+#Are you taking any traditional medicine for your high blood pressure?
 cohort1_data$hbp_trt_tradmed<- cohort1_data$hbp_trt_tradmed
 cohort2_data$hbp_trt_tradmed <- cohort2_data$s3a1_thbpth
 
@@ -414,7 +416,7 @@ cohort2_data$hbp_trt_allopdrug <- cohort2_data$s3a1_thbpdr
 cohort1_data$hbp_trt_none<- cohort1_data$hbp_trt_none
 cohort2_data$hbp_trt_none <- cohort2_data$s3a1_thbpno
 
-#}}}}}}
+# }}}
 
 # Diabetes for Merging {{{ ====
 
@@ -450,8 +452,7 @@ cohort2_data$dia_trt_allopdrug <- cohort2_data$s3a1_tdiadr
 cohort1_data$dia_trt_none<- cohort1_data$dia_trt_none
 cohort2_data$dia_trt_none <- cohort2_data$s3a1_tdiano
 
-#}}}}}}}}}
-
+# }}}
 
 # Hyperlipidemia for Merging {{{ ====
 
@@ -487,7 +488,7 @@ cohort2_data$hyp_trt_allopdrug <- cohort2_data$s3a1_thyldr
 cohort1_data$hyp_trt_none<- cohort1_data$hyp_trt_none
 cohort2_data$hyp_trt_none <- cohort2_data$s3a1_thylno
 
-#}}}}}}}}}}}
+# }}}
 
 # Heart disease for Merging {{{ ====
 
@@ -543,8 +544,7 @@ cohort2_data$ht_trt_allopdrug <- cohort2_data$s3a2_thrtdr
 cohort1_data$ht_trt_none<- cohort1_data$ht_trt_none
 cohort2_data$ht_trt_none <- cohort2_data$s3a2_thrtno
 
-#}}}}}}
-
+# }}}
 
 # Stroke for Merging {{{ ====
 
@@ -588,8 +588,7 @@ cohort2_data$st_urineincont <- cohort2_data$s3a3_urin
 cohort1_data$st_advmedication<- cohort1_data$st_advmedication
 cohort2_data$st_advmedication <- cohort2_data$s3a3_cmed
 
-#}}}}}}
-
+# }}}
 
 # CKD for Merging {{{ ====
 
@@ -597,7 +596,7 @@ cohort2_data$st_advmedication <- cohort2_data$s3a3_cmed
 cohort1_data$pd_kidney<- cohort1_data$pd_kidney
 cohort2_data$pd_kidney <- cohort2_data$s3a4_kddis
 
-#}}}}}}}
+# }}}
 
 # PVD for Merging {{{ ====
 
@@ -625,7 +624,7 @@ cohort2_data$pvd_painstand <- cohort2_data$s3b_still
 cohort1_data$pvd_painrelieve<- cohort1_data$pvd_painrelieve
 cohort2_data$pvd_painrelieve <- cohort2_data$s3b_resoon
 
-#}}}}}
+# }}}
 
 # Diabetes complications for Merging {{{ ====
 
@@ -649,7 +648,7 @@ cohort2_data$amp_yrsbfor <- cohort2_data$s3d1_ampy
 cohort1_data$amp_mnthsbfor<- cohort1_data$amp_mnthsbfor
 cohort2_data$amp_mnthsbfor <- cohort2_data$s3d1_ampm
 
-#If had amputation, what was the level of the amputation? 
+#If had amputation, what was the level of the amputation?
 cohort1_data$amp_level<- cohort1_data$amp_level
 cohort2_data$amp_level <- cohort2_data$s3d1_ample
 
@@ -677,7 +676,7 @@ cohort2_data$amp_eye_diagnosis <- cohort2_data$s3d2_eydia
 cohort1_data$amp_lasertherapy<- cohort1_data$amp_lasertherapy
 cohort2_data$amp_lasertherapy <- cohort2_data$s3d2_eyrec
 
-#}}}}}}
+# }}}
 
 # Outpatient treatment for Merging {{{ ====
 
@@ -705,7 +704,7 @@ cohort2_data$op_trt_hbp <- cohort2_data$s5a_hbp
 cohort1_data$op_trt_ckd<- cohort1_data$op_trt_ckd
 cohort2_data$op_trt_ckd <- cohort2_data$s5a_ckd
 
-# }}}}}}
+# }}}
 
 # Inpatient Hospitalizations for Merging {{{ ====
 
@@ -777,7 +776,7 @@ cohort2_data$ip_surg_hrttransplant<- cohort2_data$s5b1_prhrttrp
 cohort1_data$ip_surg_retinal<- cohort1_data$ip_surg_retinal
 cohort2_data$ip_surg_retinal<- cohort2_data$s5b1_prlt
 
-#}}}}}}}
+# }}}
 
 # Hospital costs for Merging {{{ ====
 
@@ -909,6 +908,9 @@ cohort2_data$hc1_pay_other<- cohort2_data$s5b2_h1pyoth
 cohort1_data$hc1_pay_otherspecify<- cohort1_data$hc1_pay_otherspecify
 cohort2_data$hc1_pay_otherspecify<- cohort2_data$s5b2_h1pyothos
 
+# }}}
+
+# Merging Cohorts {{{ ====
 
 # Common variables for merging
 svar <- c(
@@ -979,7 +981,7 @@ svar <- c(
 	"pa_modact_days",
 	"pa_modacttime_hr",
 	"pa_modacttime_min",
-	"pa_walk_days", 
+	"pa_walk_days",
 	"pa_walktime_hr",
 	"pa_walktime_min",
 	"slp_hrswkdays",
@@ -992,7 +994,7 @@ svar <- c(
 	"dt_veg",
 	"dt_egg",
 	"dt_spldiet",
-	"dt_diabdiet", 
+	"dt_diabdiet",
 	"dt_wtreducediet",
 	"pd_hbp",
 	"hbp_since_yrs",
@@ -1113,8 +1115,6 @@ svar <- c(
 	"hc1_pay_hinsurance",
 	"hc1_pay_other",
 	"hc1_pay_otherspecify"
-	
-
 )
 
 # Merge both datasets will require them to have the same columns
