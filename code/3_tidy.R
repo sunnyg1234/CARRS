@@ -43,17 +43,17 @@ df$agecat[is.na(df$age)] <- NA
 
 # Education Categories
 df$educat[df$edu_stat == 6 | df$edu_stat==7] <- 0 #no education
-df$educat[df$edu_stat== 5] <- 1 #primary school 
+df$educat[df$edu_stat== 5] <- 1 #primary school
 df$educat[df$edu_stat==3 | df$edu_stat==4] <- 2 # high school or secondary
 df$educat[df$edu_stat == 1 | df$edu_stat==2] <- 3 #college
 df$educat[is.na(df$edu_stat)] <- NA
 
-#total household income 
+#total household income
 df$income[df$hh_income <= 2]<- 0 #income less than 10,000
 df$income[df$hh_income >= 3]<- 1 #income more than 10,000
 df$income[is.na(df$hh_income)] <- NA
 
-#Smoking/ Tobacco 
+#Smoking/ Tobacco
 #tobacco ever used
 df$tobaccoever[df$tob_everused ==1]<- 1 #yes
 df$tobaccoever[df$tob_everused ==2]<- 0 #no
@@ -80,25 +80,26 @@ df$alcoholever[df$alc_everused ==1]<- 1 #ever drinker
 df$alcoholever[df$alc_everused ==2]<- 0 #never drinker
 df$alcoholever[is.na(df$alc_everused)]<- NA
 
-#alcohol category
-df$alcoholcat2[df$alc_everused==2]<-0 #never user
-df$alcoholcat2[df$alc_oftenuse>=2 | df$alc_oftenuse <=4]<- 1 #past user or current occasional drinker
-df$alcoholcat2[df$alc_oftenuse==1]<-2 #current regular user
+#alcohol category (3 categories, thus named *cat3)
+df$alcoholcat3[df$alc_everused==2]<-0 #never user
+df$alcoholcat3[df$alc_oftenuse>=2 | df$alc_oftenuse <=4]<- 1 #past user or current occasional drinker
+df$alcoholcat3[df$alc_oftenuse==1]<-2 #current regular user
 
 
 #Physical Activity
 df$sedentarymins<- df %>% select(pa_sit_wkday_hr,pa_sit_wkday_min) %>% transmute(sedentarymins= (pa_sit_wkday_hr*60)+pa_sit_wkday_min) #mutate column to add together hours and minutes column and output in total minutes
 
-df$sedentaryminutes[df$sedentarymins>=300]<- 1 #more than 5 hours of sedentary behavior per day
+df$sedentary_greater5[df$sedentarymins>=300]<- 1 #more than 5 hours of sedentary behavior per day
 
-df$sedentaryminutes[df$sedentarymins<300] <- 0 #less than 5 hours of sedentary behavior per day
+df$sedentary_greater5[df$sedentarymins<300] <- 0 #less than 5 hours of sedentary behavior per day
 
-#Employement 
+#Employement
 
-df$employ4[df$emp_stat >= 2]<- 0 #not working housewife, student, retired)
-df$employ4[df$emp_stat ==1 & df$curr_occ==5 ]<- 1 #unskilled manual labor, landless laborer
-df$employ4[df$emp_stat ==1 & df$curr_occ==3|df$curr_occ==4]<- 2 #Skilled manual labourer, small business owner, small farmer,Semi-skilled manual labourer, marginal landowner, rickshaw driver, army jawan, carpenter, fitter 
-df$employ4[df$emp_stat ==1 & df$curr_occ==1|df$curr_occ==2]<- 1 #*1: Professional, big business, landlord, university teacher, class 1 IAS/services officer, lawyer, Trained, clerical, medium business owner, middle level farmer, teacher, maintenance (in charge), personnel manager ;
+# Named employ3 as there are 3 categories
+df$employ3[df$emp_stat >= 2]<- 0 #not working housewife, student, retired)
+df$employ3[df$emp_stat ==1 & df$curr_occ==5 ]<- 1 #unskilled manual labor, landless laborer
+df$employ3[df$emp_stat ==1 & df$curr_occ==3|df$curr_occ==4]<- 2 #Skilled manual labourer, small business owner, small farmer,Semi-skilled manual labourer, marginal landowner, rickshaw driver, army jawan, carpenter, fitter
+df$employ3[df$emp_stat ==1 & df$curr_occ==1|df$curr_occ==2]<- 1 #*1: Professional, big business, landlord, university teacher, class 1 IAS/services officer, lawyer, Trained, clerical, medium business owner, middle level farmer, teacher, maintenance (in charge), personnel manager ;
 
 
 #}}}
@@ -111,13 +112,13 @@ df$heightm<- transmute(
 
 
 #BMI category
-df$bmicat[df$bmi<23]<- 0 
+df$bmicat[df$bmi<23]<- 0
 df$bmicat[df$bmi>=23 & df$bmi<=25]<- 1
 df$bmicat[df$bmi>=25 & df$bmi<=30]<- 2
 df$bmicat[df$bmi>=30]<- 3
 df$bmicat[is.na(df$bmi)]<- NA
 
-#obese
+#obese (US definition)
 df$obese[df$bmicat <=2]<-0 #not obese
 df$obese[df$bmicat==3]<-1 #obese
 
@@ -157,7 +158,7 @@ df$highwaist[df$waist_cm<=80 & df$male==0] <-0 #no
 df$bai<- transmute(df,waist_cm/(height_cm/100)^1.5-18)
 
 #visceral adiposity index
-df$tgmmol<-transmute(  #conversion 
+df$tgmmol<-transmute(  #conversion
 	df,
 	lab_triglyc/88.57
 	)
@@ -208,7 +209,7 @@ df$missinghtwt2[
 
 # Lab and clinical measures tidying {{{====
 
-#Systolic BP average 
+#Systolic BP average
 
 #this forms a new column with the sbp averages and ignores na. the new column made doing this does not work with the row binding function for some reason
 
@@ -223,7 +224,7 @@ df$sbp_mean<- rowMeans(
 
 
 
-#Diastolic BP average 
+#Diastolic BP average
 
 #this forms a new column with the dbp average for cohort 1 and ignores na. same problem with row binding
 
@@ -321,9 +322,9 @@ svar <- c(
 	"tobaccocat",
 	"alcoholcurrent",
 	"alcoholever",
-	"alcoholcat2",
-	"sedentaryminutes",
-	"employ4",
+	"alcoholcat3",
+	"sedentary_greater5",
+	"employ3",
 	"weight_kg",
 	"height_cm",
 	"heightm",
@@ -347,27 +348,17 @@ svar <- c(
 	"diabetes",
 	"prediabetes",
 	"lab_total_chol",
-	 "lab_ldl_chol",
-	 "lowhdl",
+	"lab_ldl_chol",
+	"lowhdl",
 	"hightg",
 	"metsyn_sum",
 	"met_syn",
 	"missinghtwt",
 	"missinghtwt2"
-
 )
 
 #tidied data
 tidy_data<- df[svar]
-	
-
-
-
-# Merge both datasets will require them to have the same columns
-# Then they can be merged by rows
-#c1_merge <- cohort1_data[svar]
-#c2_merge <- cohort2_data[svar]
-#combined_data <- bind_rows(c1_merge, c2_merge)
 
 # }}}
 

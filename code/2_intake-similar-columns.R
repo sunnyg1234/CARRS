@@ -1,12 +1,7 @@
 # PROGRESS {{{ ====
 
 ### TO DO
-	# Demographics need to include home ID and city ID and ward ID
-	# BMI?
-	# Labs?
-	# Can we classify CKD better? Baseline creatinine, CKD stage? Urinalysis? Urine protein?
-	# Body weight = do we have any other measurements of body types? Any estimates on body fat? Like caliper measurements or arm size, etc?
-	# Labs to be added for cohort1 (Anish will find cohort 2)
+
 
 # }}}
 
@@ -29,7 +24,7 @@ cohort2_data <- read_csv("../data/cohort2-short.csv")
 
 # Demographics for Merging {{{ ====
 
-#Household ID 
+#Household ID
 cohort1_data$hhp_id<- cohort1_data$hhp_id
 cohort2_data$hhp_id <- cohort2_data$pa_hhp_id
 
@@ -1028,7 +1023,7 @@ cohort2_data$lab_triglyc<- cohort2_data$trigly
 cohort1_data$lab_hdlchol
 cohort2_data$lab_hdlchol<- cohort2_data$hdl
 
-#LDL cholesterol 
+#LDL cholesterol
 cohort1_data$lab_ldlchol
 cohort2_data$lab_ldlchol<- cohort2_data$ldl
 
