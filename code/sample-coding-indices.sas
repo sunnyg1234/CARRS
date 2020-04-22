@@ -1,4 +1,4 @@
-/********************************************
+s/********************************************
 * OBESITY INDICES CODING BOOK *
 * SPRING 2020 *
 ********************************************/
@@ -39,7 +39,7 @@ if pd_sex = 2 then male =0;
 agecat3 = .;
 if pd_age le 44 then agecat3=0;
 if pd_age ge 45 and pd_age le 64 then agecat3 =1;
-if pd_age ge 65 then agecat3 = 2; 
+if pd_age ge 65 then agecat3 = 2;
 
 * 3. Education;
 highestedu4 = .; *8 gets coded as missing (probably data entry error);
@@ -106,13 +106,13 @@ if pd_relig = 0 then religion3 = .;
 * 9. Employment;
 employ4 =.;
 if pd_emp_stat in (2 3 4 5) then employ4 =0; *Not Working (housewife, student, retired);
-if pd_emp_stat = 1 and pd_cur_occu in (5) then employ4 =1; 
+if pd_emp_stat = 1 and pd_cur_occu in (5) then employ4 =1;
 	*Unskilled manual labourer, landless labourer;
-if pd_emp_stat = 1 and pd_cur_occu in (3 4) then employ4 =2; 
-	*3:Skilled manual labourer, small business owner, small farmer, 
+if pd_emp_stat = 1 and pd_cur_occu in (3 4) then employ4 =2;
+	*3:Skilled manual labourer, small business owner, small farmer,
 	4:Semi-skilled manual labourer, marginal landowner, rickshaw driver, army jawan, carpenter, fitter ;
-if pd_emp_stat = 1 and pd_cur_occu in (1 2) then employ4 =3; 
-	*1: Professional, big business, landlord, university teacher, class 1 IAS/services officer, lawyer 
+if pd_emp_stat = 1 and pd_cur_occu in (1 2) then employ4 =3;
+	*1: Professional, big business, landlord, university teacher, class 1 IAS/services officer, lawyer
 	2: Trained, clerical, medium business owner, middle level farmer, teacher, maintenance (in charge), personnel manager ;
 
 * 10. Asset recoding;
@@ -160,14 +160,16 @@ if bmicat = 3 then obese = 1;
 if bmicat in (0 1) then obese_asian = 0;
 if bmicat in (2 3) then obese_asian = 1;
 
+
+skipstart**********************************
 * 4. Waist circumference and hip circumference;
-array aanthro 
-height_cm 
-waist_cm 
-hip_cm 
+array aanthro
+height_cm
+waist_cm
+hip_cm
 ;
 
-array aanthro2 
+array aanthro2
 height
 waist
 hip
@@ -180,7 +182,7 @@ end;
 
 * 5. Skinfolds;
 array askinfold
-st_triceps_1-st_triceps_3 
+st_triceps_1-st_triceps_3
 st_ss_1-st_ss_3 /*Note that this says suprascapular but this is really subscapular*/
 sp_ss_1-sp_ss_3
 ;
@@ -223,6 +225,9 @@ skinfoldlog = log(tricepsmean + subscapmean + suprapatmean);
 		*finally, compute body fat;
 		fatdurnin= (495/density - 450) * 100;
 
+skipend**********************************
+
+
 * 7. WHtR (Waist-height ratio);
 waistheightr = waist/height;
 
@@ -248,8 +253,9 @@ if waist = . then highwaist = .;
 * 10. BAI (Body Adiposity Index);
 bai = (hip/(heightm**1.5))-18;
 
+skipstart**********************************
 * 11. VAI (Visceral Adiposity Index);
- * TG and HDL-C are expressed in mmol/L. For triglycerides divide mg/dL by 88.57 and 
+ * TG and HDL-C are expressed in mmol/L. For triglycerides divide mg/dL by 88.57 and
    For total, HDL, and LDL cholesterol divide mg/dL by 38.67;
 tgmmol =  lab_triglyc/88.57;
 hdlmmol = lab_hdlchol/38.67;
@@ -280,6 +286,8 @@ end;
 sbp_mean = mean(sbp1, sbp2, sbp3);
 dbp_mean = mean(dbp1, dbp2, dbp3);
 
+skipend**********************************
+
 * 2. Hypertension;
 hypertension=.;
 if sbp_mean => 140 or dbp_mean => 90 or hbp_trt_allopdrug=1  then hypertension = 1;
@@ -290,11 +298,12 @@ hypertension1=.;
 if sbp_mean => 130 or dbp_mean => 80 or hbp_trt_allopdrug=1  then hypertension1 = 1;
 if .<sbp_mean < 130 and .<dbp_mean < 80 and hbp_trt_allopdrug in (0 2 .)  then hypertension1 = 0;
 
+
 * 3. Diabetes;
 diabetes = 0;
 if lab_fasting =>126 or lab_HbA1c => 6.5 or dia_trt_allopdrug = 1 then diabetes = 1;
 if lab_fasting = . and lab_HbA1c = . then diabetes = .;
- 
+
  *Prediabetes;
 prediabetes = 0;
 if lab_fasting =>100 or dia_trt_allopdrug = 1 then prediabetes = 1;
@@ -302,7 +311,7 @@ if lab_fasting = . then prediabetes = .;
 
 * 4. High total cholesterol;
 if lab_tchol => 200 or hyp_trt_allopdrug=1 then hightc = 1; *only for high total cholesterol, adding in medication;
-if lab_tchol < 200 then hightc = 0; 
+if lab_tchol < 200 then hightc = 0;
 if lab_tchol = . then hightc = .;
 
 * 5. High LDL-cholesterol;
@@ -322,6 +331,8 @@ if lab_triglyc => 150 then hightg = 1;
 if lab_triglyc < 150 then hightg = 0;
 if lab_triglyc = . then hightg = .;
 
+
+skipstart**********************************
 * 8. Self-reported outcomes;
 array aself pd_hbp  pd_diabetes pd_hyperlip pd_heart pd_stroke pd_kidney hf_docsaycopd; *hf_docsaycopd comes from the heart failure questions;
 array aself2 highbpself diabself hyperlipself heartself strokeself kidneyself copdself; *self-reported outcomes;
@@ -332,6 +343,7 @@ if aself = 2 then aself2 = 0;
 if aself in (0 .) then aself2 = .;
 end;
 
+skipend ****************************
 * 9. Metabolic syndrome;
 metsyn = 0;
 if male=1 and sum(highwaist, hypertension1, prediabetes, hightg, lowhdl) =>3 then metsyn=1;
@@ -385,7 +397,7 @@ if .<sbp2_mean < 130 and .<dbp2_mean < 80 and hbp_allopathic in (0 2 .)  then hy
 diabetes2 = 0;
 if f2_fpg =>126 or f2_hba1c => 6.5 or dia_allopathic = 1 then diabetes2 = 1;
 if f2_fpg = . and f2_hba1c = . then diabetes2 = .;
- 
+
  *Prediabetes visit 2;
 prediabetes2 = 0;
 if f2_fpg =>100 or dia_allopathic = 1 then prediabetes2 = 1;
@@ -393,7 +405,7 @@ if f2_fpg = . then prediabetes2 = .;
 
 * 4. High total cholesterol visit 2;
 if f2_tchol => 200 or hyper_allopathic=1 then hightc2 = 1; *only for high total cholesterol, adding in medication;
-if f2_tchol < 200 then hightc2 = 0; 
+if f2_tchol < 200 then hightc2 = 0;
 if f2_tchol = . then hightc2 = .;
 
 * 5. High LDL-cholesterol visit 2;
@@ -414,7 +426,7 @@ if f2_trigly < 150 then hightg2 = 0;
 if f2_trigly = . then hightg2 = .;
 
 * 8. Self-reported outcomes visit 2;
-array aself21 mh_hbp  mh_diab mh_hyper mh_heart mh_stroke kd_disease; 
+array aself21 mh_hbp  mh_diab mh_hyper mh_heart mh_stroke kd_disease;
 array aself22 highbpself2 diabself2 hyperlipself2 heartself2 strokeself2 kidneyself2; *self-reported outcomes;
 
 do over aself21;
@@ -480,7 +492,7 @@ if .<sbp4_mean < 130 and .<dbp4_mean < 80 and hbp_trt_all in (0 2 .)  then hyper
 diabetes4 = 0;
 if fpg =>126 or hba1c => 6.5 or dia_trt_all= 1 then diabetes4 = 1;
 if fpg = . and hba1c = . then diabetes4 = .;
- 
+
  *Prediabetes visit 4;
 prediabetes4 = 0;
 if fpg =>100 or dia_trt_all = 1 then prediabetes4 = 1;
@@ -488,7 +500,7 @@ if fpg = . then prediabetes4 = .;
 
 * 4. High total cholesterol visit 4;
 if chol => 200 or hyle_trt_all=1 then hightc4 = 1; *only for high total cholesterol, adding in medication;
-if chol < 200 then hightc4 = 0; 
+if chol < 200 then hightc4 = 0;
 if chol = . then hightc4 = .;
 
 * 5. High LDL-cholesterol visit 4;
@@ -509,7 +521,7 @@ if tg < 150 then hightg4 = 0;
 if tg = . then hightg4 = .;
 
 * 8. Self-reported outcomes visit 4;
-array aself41 hbp_dis dia_dis hyle_dis hrt_dis stroke kd_dis; 
+array aself41 hbp_dis dia_dis hyle_dis hrt_dis stroke kd_dis;
 array aself42 highbpself4 diabself4 hyperlipself4 heartself4 strokeself4 kidneyself4; *self-reported outcomes;
 
 do over aself41;
@@ -545,6 +557,8 @@ anymiss4 = 0;
 if nmiss(fpg, chol, ldl, hdl, tg, hba1c) >0 then anymiss4=1;
 run;
 
+
+**********************************
 /***** DATA CHECKING RECODING *****/;
 
 * Missing data;
@@ -586,14 +600,14 @@ run;
 * Checking original variables_Baseline;
 Proc freq data=carrs1;
 Table pd_sex pd_age pd_edu_stat pd_hhincome
-tob_everused tob_curcons alc_everused alc_oftenuse 
-pa_sit_wkday 
+tob_everused tob_curcons alc_everused alc_oftenuse
+pa_sit_wkday
 hbp_trt_allopdrug dia_trt_allopdrug hyp_trt_allopdrug
 pd_hbp  pd_diabetes pd_hyperlip pd_heart pd_stroke pd_kidney/missing;
 run;
 
 Proc means data=carrs1;
-Var pa_sit_wkday_hr pa_sit_wkday_min 
+Var pa_sit_wkday_hr pa_sit_wkday_min
 height_cm weight_kg waist_cm hip_cm st_triceps_1 st_triceps_2 st_triceps_3
 st_ss_1 st_ss_2 st_ss_3 sp_ss_1 sp_ss_2 sp_ss_3
 systolic_bp_first systolic_bp_second systolic_bp_third
@@ -614,8 +628,8 @@ highestedu4*highestedu3
 pd_hhincome*incomegt10k
 tob_everused*tobaccoever
 tob_curcons*tobaccocurrent
-alc_everused*alcoholcurrent 
-alc_everused*alcoholever 
+alc_everused*alcoholcurrent
+alc_everused*alcoholever
 alc_oftenuse*alcoholcat2
 alc_everused*alcoholcat2
 sedentarymins*sedentary01
@@ -624,15 +638,15 @@ hbp_trt_allopdrug*hypertension1
 bmicat*obese
 bmicat*obese_asian
 pd_hbp*highbpself
-pd_diabetes*diabself 
-pd_hyperlip*hyperlipself 
-pd_heart*heartself 
-pd_stroke*strokeself 
+pd_diabetes*diabself
+pd_hyperlip*hyperlipself
+pd_heart*heartself
+pd_stroke*strokeself
 pd_kidney*kidneyself
 hf_docsaycopd*copdself
 /nocol norow nopercent;
 run;
-    
+
 Proc means data=carrs1;
 class agecat3;
 var pd_age;
@@ -703,7 +717,7 @@ run;
 
 Proc freq data=carrs1;
 table metsyn;
-run; 
+run;
 
 * Checking original variables_Visit 2;
 Proc freq data=carrs1;
@@ -725,18 +739,18 @@ f2_trigly;
 run;
 
 Proc freq data=carrs1;
-Table sex*male2 
+Table sex*male2
 hbp_allopathic*hypertension2
 hbp_allopathic*hypertension21
 mh_hbp*highbpself2
-mh_diab*diabself2 
-mh_hyper*hyperlipself2 
-mh_heart*heartself2 
-mh_stroke*strokeself2 
+mh_diab*diabself2
+mh_hyper*hyperlipself2
+mh_heart*heartself2
+mh_stroke*strokeself2
 kd_disease*kidneyself2
 /nocol norow nopercent;
 run;
-    
+
 Proc means data=carrs1;
 class hypertension2;
 var sbp2_mean dbp2_mean;
@@ -782,7 +796,7 @@ run;
 
 Proc freq data=carrs1;
 table metsyn2;
-run; 
+run;
 
 * Checking original variables_Visit 4;
 Proc freq data=carrs1;
@@ -804,18 +818,18 @@ tg;
 run;
 
 Proc freq data=carrs1;
-Table f4_t_gender*male4 
+Table f4_t_gender*male4
 hbp_trt_all*hypertension4
 hbp_trt_all*hypertension41
 hbp_dis*highbpself4
-dia_dis*diabself4 
-hyle_dis*hyperlipself4 
-hrt_dis*heartself4 
-stroke*strokeself4 
+dia_dis*diabself4
+hyle_dis*hyperlipself4
+hrt_dis*heartself4
+stroke*strokeself4
 kd_dis*kidneyself4
 /nocol norow nopercent;
 run;
-    
+
 Proc means data=carrs1;
 class hypertension4;
 var sbp4_mean dbp4_mean;
@@ -861,7 +875,7 @@ run;
 
 Proc freq data=carrs1;
 table metsyn4;
-run; 
+run;
 
 * Create a permanent Data set;
 Libname s "C:\Users\npoveda\Documents\Emory\Second year\Research Rotation 2";
@@ -870,4 +884,3 @@ run;
 Data s.carrs_recode;
 set carrs1;
 run;
-

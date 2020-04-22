@@ -26,14 +26,17 @@ cohort2_data <- read_csv("../data/cohort2-short.csv")
 
 # }}}
 
-# Sunny/BMI Section {{{ ====
-
-#This adds a column to the data for BMI using the height and weight with proper conversions
-cohort1_data<- mutate(cohort1_data,BMI=(weight_kg/(height_cm/100)^2))
-
-# }}}
 
 # Demographics for Merging {{{ ====
+
+#Household ID 
+cohort1_data$hhp_id<- cohort1_data$hhp_id
+cohort2_data$hhp_id <- cohort2_data$pa_hhp_id
+
+#CEB code
+cohort1_data$ceb_code<- cohort1_data$ceb_code
+
+cohort2_data$ceb_code<- cohort2_data$pa_ccode
 
 # Age
 cohort1_data$age <- cohort1_data$pd_age
@@ -42,6 +45,24 @@ cohort2_data$age <- cohort2_data$s1a_age
 # Sex
 cohort1_data$sex <- cohort1_data$pd_sex
 cohort2_data$sex <- cohort2_data$s1a_sex
+
+#Height
+cohort1_data$height_cm<- cohort1_data$height_cm
+cohort2_data$height_cm<- cohort2_data$height
+
+#Weight
+cohort1_data$weight_kg<- cohort1_data$weight_kg
+cohort2_data$weight_kg<- cohort2_data$weight
+
+#BMI
+cohort1_data<- mutate(cohort1_data, bmi=(weight_kg/(height_cm/100)^2))
+cohort2_data<- mutate(cohort2_data, bmi=(weight_kg/(height_cm/100)^2))
+
+#city= variables are same name already
+
+#marital status
+cohort1_data$pd_mstat<-cohort1_data$pd_mstat
+cohort2_data$pd_mstat<- cohort2_data$s1a_ms
 
 #Educational status
 cohort1_data$edu_stat <- cohort1_data$pd_edu_stat
@@ -64,6 +85,10 @@ cohort1_data$curr_occ<- cohort1_data$pd_cur_occu
 cohort2_data$curr_occ <- cohort2_data$s1a_coc
 
 # }}}
+
+#PHQ-9 and Quality of life {{{====
+
+#anxiety,depression, mobility, self care, and pain recoded in intake-different-columns and possibly ready for transfer
 
 # Tobacco use for Merging {{{ ====
 
@@ -323,6 +348,17 @@ cohort2_data$pa_walktime_hr <- cohort2_data$s2c_wah
 #In a day, how many minutes do you spend walking?
 cohort1_data$pa_walktime_min<- cohort1_data$pa_walktime_min
 cohort2_data$pa_walktime_min <- cohort2_data$s2c_wam
+
+#In a week, how many hours do you spend sitting?
+cohort1_data$pa_sit_wkday_hr<- cohort1_data$pa_sit_wkday_hr
+
+cohort2_data$pa_sit_wkday_hr<- cohort2_data$s2c_sh
+
+#In a week, how many minutes do you spend sitting?
+cohort1_data$pa_sit_wkday_min<- cohort1_data$pa_sit_wkday_min
+
+cohort2_data$pa_sit_wkday_min<- cohort2_data$s2c_sm
+
 
 # }}}
 
@@ -679,6 +715,8 @@ cohort2_data$amp_lasertherapy <- cohort2_data$s3d2_eyrec
 
 # Outpatient treatment for Merging {{{ ====
 
+#These seem to be the most completely filled out with the least NA compared to the disease specific section
+
 #Are you undergoing treatment as an outpatient for heart disease?
 cohort1_data$op_trt_hd<- cohort1_data$op_trt_hd
 cohort2_data$op_trt_hd <- cohort2_data$s5a_hrt
@@ -909,13 +947,134 @@ cohort2_data$hc1_pay_otherspecify<- cohort2_data$s5b2_h1pyothos
 
 # }}}
 
+#Anthropometric measures for Merging{{{====
+
+#Height(cm)
+cohort1_data$height_cm<- cohort1_data$height_cm
+cohort2_data$height_cm<- cohort2_data$height
+
+#Weight(kg)
+cohort1_data$weight_kg<- cohort1_data$weight_kg
+cohort2_data$weight_kg<- cohort2_data$weight
+
+#systolic bp 1
+cohort1_data$systolic_bp_first<- cohort1_data$systolic_bp_first
+
+cohort2_data$systolic_bp_first<- cohort2_data$bp_s1
+
+#systolic bp 2
+cohort1_data$systolic_bp_second<- cohort1_data$systolic_bp_second
+
+cohort2_data$systolic_bp_second<- cohort2_data$bp_s2
+
+#systolic bp 3
+cohort1_data$systolic_bp_third<- cohort1_data$systolic_bp_third
+
+cohort2_data$systolic_bp_third<- cohort2_data$bp_s3
+
+#diastolic bp 1
+cohort1_data$diastolic_bp_first<- cohort1_data$diastolic_bp_first
+
+cohort2_data$diastolic_bp_first<- cohort2_data$bp_d1
+
+#diastolic bp 2
+cohort1_data$diastolic_bp_second<- cohort1_data$diastolic_bp_second
+
+cohort2_data$diastolic_bp_second<- cohort2_data$bp_d2
+
+#diastolic bp 3
+cohort1_data$diastolic_bp_third<- cohort1_data$diastolic_bp_third
+
+cohort2_data$diastolic_bp_third<- cohort2_data$bp_d3
+
+#pulse rate 1
+cohort1_data$pulse_rate_first<- cohort1_data$pulse_rate_first
+
+cohort2_data$pulse_rate_first<- cohort2_data$bp_p1
+
+#pulse rate 2
+cohort1_data$pulse_rate_second<- cohort1_data$pulse_rate_second
+
+cohort2_data$pulse_rate_second<- cohort2_data$bp_p2
+
+
+#waist cm
+cohort1_data$waist_cm<- cohort1_data$waist_cm
+
+cohort2_data$waist_cm<- cohort2_data$bp_waist
+
+#hip cm
+cohort1_data$hip_cm<- cohort1_data$hip_cm
+
+cohort2_data$hip_cm<- cohort2_data$bp_hip
+
+
+
+#Lab measurements for merging{{{====
+
+#fasting plasma glucose
+cohort1_data$lab_fasting
+cohort2_data$lab_fasting<- cohort2_data$fpg
+
+#total cholesterol
+cohort1_data$lab_tchol
+cohort2_data$lab_tchol<- cohort2_data$total_chol
+
+#triglycerides
+cohort1_data$lab_triglyc
+cohort2_data$lab_triglyc<- cohort2_data$trigly
+
+#HDL cholesterol
+cohort1_data$lab_hdlchol
+cohort2_data$lab_hdlchol<- cohort2_data$hdl
+
+#LDL cholesterol 
+cohort1_data$lab_ldlchol
+cohort2_data$lab_ldlchol<- cohort2_data$ldl
+
+#VLDL cholesterol
+cohort1_data$lab_vldlchol
+cohort2_data$lab_vldlchol<- cohort2_data$vldl
+
+#serum urea
+cohort1_data$lab_ser_urea
+cohort2_data$lab_ser_urea<- cohort2_data$urea
+
+#serum creatinine
+cohort1_data$lab_ser_creatinine
+cohort2_data$lab_ser_creatinine<- cohort2_data$creatnine
+
+#HbA1c
+cohort1_data$lab_HbA1c
+cohort2_data$lab_HbA1c<- cohort2_data$hba1c
+
+#urine microalbumin
+cohort1_data$lab_urin_malbumin<- cohort1_data$lab_urin_malbumin_mgL
+cohort2_data$lab_urin_malbumin<- cohort2_data$urine_microalbumin
+
+#urine creatinine
+cohort1_data$lab_urin_creatinine
+cohort2_data$lab_urin_creatinine<- cohort2_data$urine_creatinine
+
+
+
+
+#}}}
+
 # Merging Cohorts {{{ ====
 
 # Common variables for merging
 svar <- c(
 	"pid",
+	"hhp_id",
+	"ceb_code",
 	"age",
 	"sex",
+	"city",
+	"pd_mstat",
+	"height_cm",
+	"weight_kg",
+	"bmi",
 	"edu_stat",
 	"edu_yrs",
 	"hh_income",
@@ -983,6 +1142,8 @@ svar <- c(
 	"pa_walk_days",
 	"pa_walktime_hr",
 	"pa_walktime_min",
+	"pa_sit_wkday_hr",
+	"pa_sit_wkday_min",
 	"slp_hrswkdays",
 	"slp_hrwkend",
 	"slp_trblslp",
@@ -1113,8 +1274,31 @@ svar <- c(
 	"hc1_pay_soldhome",
 	"hc1_pay_hinsurance",
 	"hc1_pay_other",
-	"hc1_pay_otherspecify"
-)
+	"hc1_pay_otherspecify",
+	"height_cm",
+	"weight_kg",
+	"systolic_bp_first",
+	"systolic_bp_second",
+	"systolic_bp_third",
+	"diastolic_bp_first",
+	"diastolic_bp_second",
+	"diastolic_bp_third",
+	"pulse_rate_first",
+	"pulse_rate_second",
+	"waist_cm",
+	"hip_cm",
+	"lab_fasting",
+	"lab_tchol",
+	"lab_hdlchol",
+	"lab_ldlchol",
+	"lab_vldlchol",
+	"lab_triglyc",
+	"lab_ser_urea",
+	"lab_ser_creatinine",
+	"lab_HbA1c",
+	"lab_urin_malbumin",
+	"lab_urin_creatinine"
+	)
 
 # Merge both datasets will require them to have the same columns
 # Then they can be merged by rows
@@ -1124,5 +1308,4 @@ combined_data <- bind_rows(c1_merge, c2_merge)
 
 # }}}
 
-#sample code to replace values when needed
-#cohort1_data$tob_everused<- replace(cohort1_data$tob_everused, cohort1_data$tob_everused >2 & cohort1_data$tob_everused <4, 2)
+
