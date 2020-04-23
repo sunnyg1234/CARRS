@@ -3,8 +3,7 @@
 # This file is for disparate columns, so we can at least identify which ones we will need to massage into a correct definition
 
 ### TO DO
-	# Look at file called sample-coding-indices.sas
-	# Create new summary variables that match their pattern
+	# Convert functions instead of transmute to just simple vector math (e.g. df$vector * df$secondthing)
 
 ### DEFINITIONS
 	# Clinical covariates
@@ -22,8 +21,8 @@
 
 # }}}
 
-# New table for recoding
-df <- combined_data
+# Merging Cohorts {{{ ====
+
 
 # Demographic Tidying {{{ ====
 
@@ -155,18 +154,25 @@ df$highwaist[df$waist_cm>80 & df$male==0]<- 1 #yes
 df$highwaist[df$waist_cm<=80 & df$male==0] <-0 #no
 
 #body adiposity index
-df$bai<- transmute(df,waist_cm/(height_cm/100)^1.5-18)
+df$bai<- transmute(df, waist_cm/(height_cm/100)^1.5-18)
+
+df$bai <- df$waist_cm / ((df$height_cm/100)^2)
 
 #visceral adiposity index
-df$tgmmol<-transmute(  #conversion
-	df,
-	lab_triglyc/88.57
-	)
 
-df$hdlmmol<- transmute(  #conversion
-	df,
-	lab_hdlchol/38.67
-)
+# Convert to mmol
+df$tgmmol <- df$lab_triglyc/88.57
+df$hdlmmol <- df$lab_hdlchol/38.67
+
+# For men
+df$vai[df$sex == 1] <-
+	(df[df$sex == 1, ]$waist_cm / (39.68 + 1.88*df[df$sex == 1, ]$bmi)) * (df[df$sex == 1, ]$tgmmol/1.03) * (1.31/df[df$sex == 1, ]$hdlmmol)
+
+# For women
+df$vai[df$sex == 2] <-
+	(df[df$sex == 2, ]$waist_cm / (36.58 + 1.89*df[df$sex == 2, ]$bmi)) * (df[df$sex == 2, ]$tgmmol/0.81) * (1.52/df[df$sex == 2, ]$hdlmmol)
+
+# if male=1 then vai=(waist/(39.68+(1.88*bmi)))*(tgmmol/1.03)*(1.31/hdlmmol);
 
 vai1<- transmute(     #vai male
 	df,
@@ -299,11 +305,8 @@ df$metsyn_sum<- rowSums(
 #categories
 
 df$met_syn[df$male==1 & df$metsyn_sum >=3] <- 1 #yes
-
 df$met_syn[df$male==1 & df$metsyn_sum <3] <- 0 #no
-
 df$met_syn[df$male==0 & df$metsyn_sum >=3] <- 1 #yes
-
 df$met_syn[df$male==0 & df$metsyn_sum <3] <- 0 #no
 
 #}}}
@@ -311,7 +314,7 @@ df$met_syn[df$male==0 & df$metsyn_sum <3] <- 0 #no
 # Merge files {{{ ====
 
 #common variables for merging
-svar <- c(
+fvar <- c(
 	"pid",
 	"male",
 	"agecat",
@@ -358,7 +361,7 @@ svar <- c(
 )
 
 #tidied data
-tidy_data<- df[svar]
+tidy_data<- df[fvar]
 
 # }}}
 
