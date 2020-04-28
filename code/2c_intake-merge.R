@@ -239,8 +239,17 @@ svar <- c(
 
 # Different column variables
 dvar <- c(
+	"ward",
+	"mobility",
+	"self_care",
+	"usual_act",
+	"pain",
+	"depression",
 	"phq_total",
-	"phq_cat"
+	"phq_cat",
+	"phq_binary",
+	"lab_urin_protein",
+	"lab_urin_glucose"
 )
 
 
@@ -249,4 +258,5 @@ dvar <- c(
 c1_merge <- cohort1_data[c(svar, dvar)]
 c2_merge <- cohort2_data[c(svar, dvar)]
 combined_data <- bind_rows(c1_merge, c2_merge)
+
 # }}}

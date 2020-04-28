@@ -3,7 +3,7 @@
 # This file is for disparate columns, so we can at least identify which ones we will need to massage into a correct definition
 
 ### TO DO
-	# Convert functions instead of transmute to just simple vector math (e.g. df$vector * df$secondthing)
+#DONE<- Convert functions instead of transmute to just simple vector math (e.g. df$vector * df$secondthing)
 
 ### DEFINITIONS
 	# Clinical covariates
@@ -17,7 +17,7 @@
 # Will need to "source" the intake files" to bring up the right R object / variables
 # Can do this in RStudio
 
-
+df<- combined_data
 
 # }}}
 
@@ -86,7 +86,9 @@ df$alcoholcat3[df$alc_oftenuse==1]<-2 #current regular user
 
 
 #Physical Activity
-df$sedentarymins<- df %>% select(pa_sit_wkday_hr,pa_sit_wkday_min) %>% transmute(sedentarymins= (pa_sit_wkday_hr*60)+pa_sit_wkday_min) #mutate column to add together hours and minutes column and output in total minutes
+sedentarymin_mutation<- df %>% select(pa_sit_wkday_hr,pa_sit_wkday_min) %>% mutate(sedentarymins= (pa_sit_wkday_hr*60)+pa_sit_wkday_min) #mutate column to add together hours and minutes column and output in total minutes
+
+df$sedentarymins<- sedentarymin_mutation$sedentarymins
 
 df$sedentary_greater5[df$sedentarymins>=300]<- 1 #more than 5 hours of sedentary behavior per day
 
@@ -105,9 +107,7 @@ df$employ3[df$emp_stat ==1 & df$curr_occ==1|df$curr_occ==2]<- 1 #*1: Professiona
 
 # Anthropometric measurements tidying {{{====
 
-df$heightm<- transmute(
-	df,
-	height_cm/100)
+df$heightm<- df$height_cm/100
 
 
 #BMI category
@@ -126,14 +126,10 @@ df$obeseasian[df$bmicat <=1]<-0 #not obese asian
 df$obeseasian[df$bmicat>=2]<-1 #obese asian
 
 #waist to hip ratio mutation
-df$waship<- transmute(
-				df,
-				waist_cm/hip_cm)
+df$waship<- df$waist_cm/df$hip_cm
 
 #waist to height ratio mutation
-df$waistheightr<- transmute(
-				df,
-				waist_cm/height_cm)
+df$waistheightr<- df$waist_cm/df$height_cm
 
 #high waist/hip ratio?
 df$highwaisthip[df$waship >.8] <- 1  #yes
@@ -154,9 +150,7 @@ df$highwaist[df$waist_cm>80 & df$male==0]<- 1 #yes
 df$highwaist[df$waist_cm<=80 & df$male==0] <-0 #no
 
 #body adiposity index
-df$bai<- transmute(df, waist_cm/(height_cm/100)^1.5-18)
-
-df$bai <- df$waist_cm / ((df$height_cm/100)^2)
+df$bai <- df$waist_cm / (df$height_cm/100)^1.5-18
 
 #visceral adiposity index
 
@@ -174,26 +168,6 @@ df$vai[df$sex == 2] <-
 
 # if male=1 then vai=(waist/(39.68+(1.88*bmi)))*(tgmmol/1.03)*(1.31/hdlmmol);
 
-vai1<- transmute(     #vai male
-	df,
-	(df$waist_cm/
-		39.68+
-		(1.88*df$bmi)))
-#can't figure out how to add second part of equation to above
-#*(df$tgmmol/1.03)*(1.31/df$hdlmmol)
-
-vai2<- transmute(     #vai female
-	df,
-	(df$waist_cm/
-	 	36.58+
-	 	(1.88*df$bmi)))
-
-#can't figure out how to add second part of equation to above
-#*(df$tgmmol/0.81)*(1.52/df$hdlmmol)
-
-df$vai[df$male==1]<- vai1
-
-df$vai[df$male==0]<- vai2
 
 #indicator for missing height and weight
 
@@ -208,8 +182,6 @@ df$missinghtwt2[
 	df$height_cm >9999 &
 		df$weight_kg>9999]<- 1
     	#invalid height and weight
-
-
 
 
 
@@ -247,12 +219,12 @@ df$dbp_mean<- rowMeans(
 #old hypertension cutoff groups
 df$hypertension[df$sbp_mean >= 140 | df$dbp_mean >= 90| df$hbp_trt_allopdrug==1]<-1 #yes(old)
 
-df$hypertension[df$sbp_mean < 140 & df$dbp_mean < 90 & df$hbp_trt_allopdrug==2]<-0 #no(old)
+df$hypertension[df$sbp_mean < 140 & df$dbp_mean < 90 & df$hbp_trt_allopdrug==2|is.na(df$hbp_trt_allopdrug)]<-0 #no(old)
 
 #new hypertension cutoff groups
 df$hypertension1[df$sbp_mean >= 130 | df$dbp_mean >= 80| df$hbp_trt_allopdrug==1]<-1 #yes(new)
 
-df$hypertension1[df$sbp_mean < 130 & df$dbp_mean < 80 & df$hbp_trt_allopdrug==2]<-0  #no(new)
+df$hypertension1[df$sbp_mean < 130 & df$dbp_mean < 80 & df$hbp_trt_allopdrug==2|is.na(df$hbp_trt_allopdrug)]<-0  #no(new)
 
 #diabetes
 df$diabetes[df$lab_fasting >= 126 | df$lab_HbA1c >= 6.5| df$dia_trt_allopdrug==1]<-1 #yes
@@ -309,13 +281,45 @@ df$met_syn[df$male==1 & df$metsyn_sum <3] <- 0 #no
 df$met_syn[df$male==0 & df$metsyn_sum >=3] <- 1 #yes
 df$met_syn[df$male==0 & df$metsyn_sum <3] <- 0 #no
 
+
+#GFR estimate with modified MDRD
+df$gfr<- 186 * df$lab_ser_creatinine^-1.154 * df$age^-0.203
+
+df$gfr[df$sex==2]<- 186 * df[df$sex==2,]$lab_ser_creatinine^-1.154 * df[df$sex==2,]$age^-0.203 * 0.742
+
+#eGFR estimate with cockcroft-gault
+df$egfr<- ((140-df$age)* df$weight_kg)/ (72 * df$lab_ser_creatinine)
+
+df$egfr[df$sex==2]<- ((140-df[df$sex==2,]$age)* df[df$sex==2,]$weight_kg)/ (72 * df[df$sex==2,]$lab_ser_creatinine)*.85
+
+
+
+#When lab values= 0 then make NA
+
+lab_zero_recode<- c("lab_fasting",
+"lab_tchol",
+"lab_hdlchol",
+"lab_ldlchol",
+"lab_vldlchol",
+"lab_triglyc",
+"lab_ser_urea",
+"lab_ser_creatinine",
+"lab_HbA1c",
+"lab_urin_malbumin",
+"lab_urin_creatinine",
+"lab_fasting")
+
+
+na_if(lab_zero_recode,0)
+
+
+
 #}}}
 
 # Merge files {{{ ====
 
 #common variables for merging
 fvar <- c(
-	"pid",
 	"male",
 	"agecat",
 	"educat",
@@ -348,6 +352,8 @@ fvar <- c(
 	"hypertension1",
 	"bai",
 	"tgmmol",
+	"hdlmmol",
+	"vai",
 	"diabetes",
 	"prediabetes",
 	"lab_total_chol",
@@ -356,6 +362,8 @@ fvar <- c(
 	"hightg",
 	"metsyn_sum",
 	"met_syn",
+	"gfr",
+	"egfr",
 	"missinghtwt",
 	"missinghtwt2"
 )
@@ -363,6 +371,9 @@ fvar <- c(
 #tidied data
 tidy_data<- df[fvar]
 
+#This combines the tidied variables with the similar and different columns
+
+combined_data_tidy<-bind_cols(combined_data, tidy_data)
 # }}}
 
 

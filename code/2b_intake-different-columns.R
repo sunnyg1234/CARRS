@@ -3,22 +3,23 @@
 # This file is for disparate columns, so we can at least identify which ones we will need to massage into a correct definition
 
 ### TO DO
-# PHQ9 binary socre (>=10 is "depression")
-# Convert TRACE/TRECE to 1, and then use +, ++, +++, ++++ to match with 1-4, Convert NIL to 0, and leave Spill as NA
+# Done<- PHQ9 binary socre (>=10 is "depression")
+# Done<- Convert TRACE/TRECE to 1, and then use +, ++, +++, ++++ to match with 1-4, Convert NIL to 0, and leave Spill as NA
 
 # }}}
 
 # Demographics {{{====
 
-# missing ward data from cohort 2
+# ward data cohort 2
 cohort1_data$ward <- cohort1_data$ward
+
+#missing ward data from cohort 2 as NA for now
+
+cohort2_data$ward<- NA
 
 # }}}
 
 # PHQ-9 and QOL {{{====
-
-# PHQ-9 questions are only present in cohort 2
-
 
 # Below all the phq codes were recoded so that it will be easy to add them and give people a total score
 
@@ -105,79 +106,82 @@ cohort2_data$phq_cat[cohort2_data$phq_total >= 20 & cohort2_data$phq_total <= 27
 
 # PHQ binary (>= 10)
 
+cohort2_data$phq_binary[cohort2_data$phq_total>=10]<- 1 #depression
+
+cohort2_data$phq_binary[cohort2_data$phq_total<10]<- 0 #no depression
+
 # For Cohort 1, data is given as null
-cohort1_data$phq_total <- cohort1_data$phq_cat <- NA
+cohort1_data$phq_total <- cohort1_data$phq_cat <- cohort1_data$phq_binary<- NA
+
+
 
 # mobility
 cohort2_data$mobility[cohort2_data$s8_qolmob == 1] <- 1
 
-cohort2_data$mobility[cohort2_data$s8_qolmob >= 2 | cohort2_data$s8_qolmob <= 4] <- 2 # converting slight/moderate/ severe problems in walking to 1 category to match cohort 1
+cohort2_data$mobility[cohort2_data$s8_qolmob >= 2 | cohort2_data$s8_qolmob <= 4] <- 2 # converting to equivalent
 
-cohort2_data$mobility[cohort2_data$s8_qolmob == 5] <- 3 # converting unable to walk to same category as cohort 1
+cohort2_data$mobility[cohort2_data$s8_qolmob == 5] <- 3 # converting to equivalent
 
 cohort2_data$mobility[is.na(cohort2_data$s8_qolmob)] <- NA
 
-cohort1_data$pd_mobility <- cohort1_data$pd_mobility
+cohort1_data$mobility<- cohort1_data$pd_mobility
 
-cohort2_data$pd_mobility <- cohort2_data$mobility # new codes: 1= no problems walking; 2= mild/moderate/severe problems walking 3= unable to walk
-
+# new codes: 1= no problems walking; 2= mild/moderate/severe problems walking 3= unable to walk
 
 
 # self care ability
 cohort2_data$self_care[cohort2_data$s8_qolself == 1] <- 1
 
-cohort2_data$self_care[cohort2_data$s8_qolself >= 2 | cohort2_data$s8_qolself <= 4] <- 2 # converting slight/moderate/ severe problems in self care to 1 category to match cohort 1
+cohort2_data$self_care[cohort2_data$s8_qolself >= 2 | cohort2_data$s8_qolself <= 4] <- 2 # converting to equivalent
 
-cohort2_data$self_care[cohort2_data$s8_qolself == 5] <- 3 # converting unable to walk to same category as cohort 1
+cohort2_data$self_care[cohort2_data$s8_qolself == 5] <- 3 # converting to equivalent
 
 cohort2_data$self_care[is.na(cohort2_data$s8_qolself)] <- NA
 
-cohort1_data$pd_selfcare <- cohort1_data$pd_selfcare
+cohort1_data$self_care <- cohort1_data$pd_selfcare
 
-cohort2_data$pd_selfcare <- cohort2_data$self_care # new codes: 1= no problems ; 2= mild/moderate/severe problems  3= unable to take care of self
+ # new codes: 1= no problems ; 2= mild/moderate/severe problems  3= unable to take care of self
 
 # usual activities
 cohort2_data$usual_act[cohort2_data$s8_qoluat == 1] <- 1
 
-cohort2_data$usual_act[cohort2_data$s8_qoluat >= 2 | cohort2_data$s8_qoluat <= 4] <- 2 # converting slight/moderate/ severe problems in doing usual activities to 1 category to match cohort 1
+cohort2_data$usual_act[cohort2_data$s8_qoluat >= 2 | cohort2_data$s8_qoluat <= 4] <- 2 # converting to equivalent
 
-cohort2_data$usual_act[cohort2_data$s8_qoluat == 5] <- 3 # converting unable to walk to same category as cohort 1
+cohort2_data$usual_act[cohort2_data$s8_qoluat == 5] <- 3 # converting to equivalent
 
 cohort2_data$usual_act[is.na(cohort2_data$s8_qoluat)] <- NA
 
-cohort1_data$pd_usualact <- cohort1_data$pd_usualact
+cohort1_data$usual_act<- cohort1_data$pd_usualact
 
-cohort2_data$pd_usualact <- cohort2_data$usual_act # new codes: 1= no problems ; 2= mild/moderate/severe problems  3= unable to take care of self
+ # new codes: 1= no problems ; 2= mild/moderate/severe problems  3= unable to take care of self
 
 # pain
 cohort2_data$pain[cohort2_data$s8_qoldcm == 1] <- 1
 
-cohort2_data$pain[cohort2_data$s8_qoldcm == 2 | cohort2_data$s8_qoldcm == 3] <- 2 # converting slight and moderate pain category to match the moderate pain category in cohort 1
+cohort2_data$pain[cohort2_data$s8_qoldcm == 2 | cohort2_data$s8_qoldcm == 3] <- 2 # converting to equivalent
 
-cohort2_data$pain[cohort2_data$s8_qoldcm == 4 | cohort2_data$s8_qoldcm == 5] <- 3 # converting severe and unbearable pain category to match severe pain category in cohort 1
+cohort2_data$pain[cohort2_data$s8_qoldcm == 4 | cohort2_data$s8_qoldcm == 5] <- 3 # converting to equivalent
 
 cohort2_data$pain[is.na(cohort2_data$s8_qoldcm)] <- NA
 
-cohort1_data$pd_pain <- cohort1_data$pd_pain
+cohort1_data$pain <- cohort1_data$pd_pain
 
-cohort2_data$pd_pain <- cohort2_data$pain # new codes: 1= no problems ; 2= mild/moderate pain 3= severe pain
+# new codes: 1= no problems ; 2= mild/moderate pain 3= severe pain
 
 # depression
 
 cohort2_data$depression[cohort2_data$s8_qolands == 1] <- 1
 
-cohort2_data$depression[cohort2_data$s8_qolands == 2 | cohort2_data$s8_qoldcm == 3] <- 2 # converting slight and moderate anxiety/depression category to match the moderate anxiety/depression category in cohort 1
+cohort2_data$depression[cohort2_data$s8_qolands == 2 | cohort2_data$s8_qoldcm == 3] <- 2 # converting to equivalent
 
-cohort2_data$depression[cohort2_data$s8_qolands == 4 | cohort2_data$s8_qolands == 5] <- 3 # converting severe and extreme anxiety/depression to match severe anxiety/depression category in cohort 1
+cohort2_data$depression[cohort2_data$s8_qolands == 4 | cohort2_data$s8_qolands == 5] <- 3 # cconverting to equivalent
 
 cohort2_data$depression[is.na(cohort2_data$s8_qolands)] <- NA
 
-cohort1_data$pd_depression <- cohort1_data$pd_depression
-
-cohort2_data$pd_depression <- cohort2_data$depression
+cohort1_data$depression <- cohort1_data$pd_depression
 
 # 1= not anxious or depressed
-# 2= I am moderately anxious or depressed
+# 2= I am mild or moderately anxious or depressed
 # 3= I am extremely anxious or depressed
 
 

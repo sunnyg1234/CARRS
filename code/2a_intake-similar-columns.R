@@ -1037,12 +1037,14 @@ cohort1_data$lab_HbA1c
 cohort2_data$lab_HbA1c<- cohort2_data$hba1c
 
 #urine microalbumin
+#What units do you think these are in
 cohort1_data$lab_urin_malbumin<- cohort1_data$lab_urin_malbumin_mgL
 cohort2_data$lab_urin_malbumin<- cohort2_data$urine_microalbumin
 
 #urine creatinine
 cohort1_data$lab_urin_creatinine
 cohort2_data$lab_urin_creatinine<- cohort2_data$urine_creatinine
+
 
 
 # }}}
