@@ -3,8 +3,8 @@
 # This file is for disparate columns, so we can at least identify which ones we will need to massage into a correct definition
 
 ### TO DO
-# Done<- PHQ9 binary socre (>=10 is "depression")
-# Done<- Convert TRACE/TRECE to 1, and then use +, ++, +++, ++++ to match with 1-4, Convert NIL to 0, and leave Spill as NA
+	# Add in cohort 1 phq scores
+	# Don't need to apply functions to cohort2 data, makaes more sense to apply to combined data set
 
 # }}}
 
@@ -93,7 +93,7 @@ x <-
 # Merge back into original data
 cohort2_data$phq_total <- x$phq_total
 
-# phq-9 categories
+# phq-9 categories (categories from PHQ scale)
 cohort2_data$phq_cat[cohort2_data$phq_total >= 0 & cohort2_data$phq_total <= 4] <- 0 # no depression
 
 cohort2_data$phq_cat[cohort2_data$phq_total >= 5 & cohort2_data$phq_total <= 9] <- 1 # mild depression
@@ -106,9 +106,9 @@ cohort2_data$phq_cat[cohort2_data$phq_total >= 20 & cohort2_data$phq_total <= 27
 
 # PHQ binary (>= 10)
 
-cohort2_data$phq_binary[cohort2_data$phq_total>=10]<- 1 #depression
+cohort2_data$phq_binary[cohort2_data$phq_total>=10] <- 1 #depression
 
-cohort2_data$phq_binary[cohort2_data$phq_total<10]<- 0 #no depression
+cohort2_data$phq_binary[cohort2_data$phq_total<10] <- 0 #no depression
 
 # For Cohort 1, data is given as null
 cohort1_data$phq_total <- cohort1_data$phq_cat <- cohort1_data$phq_binary<- NA
@@ -187,7 +187,7 @@ cohort1_data$depression <- cohort1_data$pd_depression
 
 # }}}}
 
-# Lab and Clinical Measures {{{====
+# Lab and Clinical Measures {{{ ====
 
 # urinary protein
 # Convert TRACE/TRECE to 1, and then use +, ++, +++, ++++ to match with 1-4, Convert NIL to 0, and leave Spill as NA
@@ -197,3 +197,5 @@ cohort2_data$lab_urin_protein <- recode(cohort2_data$urine_pro, "NIL" = 0, "+" =
 # urine glucose
 cohort1_data$lab_urin_glucose
 cohort2_data$lab_urin_glucose <- recode(cohort2_data$urine_sugar, "NIL" = 0, "+" = 1, "++" = 2, "+++" = 3, "++++" = 4, .default = NULL)
+
+# }}}

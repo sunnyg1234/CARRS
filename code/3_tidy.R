@@ -3,7 +3,7 @@
 # This file is for disparate columns, so we can at least identify which ones we will need to massage into a correct definition
 
 ### TO DO
-#DONE<- Convert functions instead of transmute to just simple vector math (e.g. df$vector * df$secondthing)
+	# Depression tidying
 
 ### DEFINITIONS
 	# Clinical covariates
@@ -17,7 +17,7 @@
 # Will need to "source" the intake files" to bring up the right R object / variables
 # Can do this in RStudio
 
-df<- combined_data
+df <- combined_data
 
 # }}}
 
@@ -104,6 +104,14 @@ df$employ3[df$emp_stat ==1 & df$curr_occ==1|df$curr_occ==2]<- 1 #*1: Professiona
 
 
 #}}}
+
+
+# Psychological variables {{{ ====
+
+# Do depression here
+
+
+# }}}
 
 # Anthropometric measurements tidying {{{====
 
@@ -283,7 +291,7 @@ df$met_syn[df$male==0 & df$metsyn_sum <3] <- 0 #no
 
 
 #GFR estimate with modified MDRD
-df$gfr<- 186 * df$lab_ser_creatinine^-1.154 * df$age^-0.203
+df$gfr <- 186 * df$lab_ser_creatinine^-1.154 * df$age^-0.203
 
 df$gfr[df$sex==2]<- 186 * df[df$sex==2,]$lab_ser_creatinine^-1.154 * df[df$sex==2,]$age^-0.203 * 0.742
 
@@ -294,7 +302,7 @@ df$egfr[df$sex==2]<- ((140-df[df$sex==2,]$age)* df[df$sex==2,]$weight_kg)/ (72 *
 
 
 
-#When lab values= 0 then make NA
+# When lab values= 0 then make NA
 
 lab_zero_recode<- c("lab_fasting",
 "lab_tchol",
