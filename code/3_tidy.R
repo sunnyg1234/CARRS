@@ -88,8 +88,9 @@ df$alcoholcat3[df$alc_oftenuse==1]<-2 #current regular user
 #Physical Activity
 sedentarymin_mutation<- df %>% select(pa_sit_wkday_hr,pa_sit_wkday_min) %>% mutate(sedentarymins= (pa_sit_wkday_hr*60)+pa_sit_wkday_min) #mutate column to add together hours and minutes column and output in total minutes
 
-df$sedentarymins<- sedentarymin_mutation$sedentarymins
+df$sedentarymins<- sedentarymin_mutation$sedentarymins #merges new column back into data frame 
 
+#category for sedentary > 5 hours per day
 df$sedentary_greater5[df$sedentarymins>=300]<- 1 #more than 5 hours of sedentary behavior per day
 
 df$sedentary_greater5[df$sedentarymins<300] <- 0 #less than 5 hours of sedentary behavior per day
@@ -100,7 +101,7 @@ df$sedentary_greater5[df$sedentarymins<300] <- 0 #less than 5 hours of sedentary
 df$employ3[df$emp_stat >= 2]<- 0 #not working housewife, student, retired)
 df$employ3[df$emp_stat ==1 & df$curr_occ==5 ]<- 1 #unskilled manual labor, landless laborer
 df$employ3[df$emp_stat ==1 & df$curr_occ==3|df$curr_occ==4]<- 2 #Skilled manual labourer, small business owner, small farmer,Semi-skilled manual labourer, marginal landowner, rickshaw driver, army jawan, carpenter, fitter
-df$employ3[df$emp_stat ==1 & df$curr_occ==1|df$curr_occ==2]<- 1 #*1: Professional, big business, landlord, university teacher, class 1 IAS/services officer, lawyer, Trained, clerical, medium business owner, middle level farmer, teacher, maintenance (in charge), personnel manager ;
+df$employ3[df$emp_stat ==1 & df$curr_occ==1|df$curr_occ==2]<- 3 #*1: Professional, big business, landlord, university teacher, class 1 IAS/services officer, lawyer, Trained, clerical, medium business owner, middle level farmer, teacher, maintenance (in charge), personnel manager ;
 
 
 #}}}
@@ -108,15 +109,50 @@ df$employ3[df$emp_stat ==1 & df$curr_occ==1|df$curr_occ==2]<- 1 #*1: Professiona
 
 # Psychological variables {{{ ====
 
-# Do depression here
+# Do depression here {{{====
+
+#phq recoded to match official survey numbers
+df$phq1<- recode(df$phq1, "1"=0, "2"=1, "3"=2, "4"=3, .default = NULL)
+df$phq2<- recode(df$phq2, "1"= 0, "2"=1, "3"=2, "4"=3, .default = NULL)
+df$phq3<- recode(df$phq3, "1"= 0, "2"=1, "3"=2, "4"=3, .default = NULL)
+df$phq4<- recode(df$phq4, "1"= 0, "2"=1, "3"=2, "4"=3, .default = NULL)
+df$phq5<- recode(df$phq5, "1"= 0, "2"=1, "3"=2, "4"=3, .default = NULL)
+df$phq6<- recode(df$phq6, "1"= 0, "2"=1, "3"=2, "4"=3, .default = NULL)
+df$phq7<- recode(df$phq7, "1"= 0, "2"=1, "3"=2, "4"=3, .default = NULL)
+df$phq8<- recode(df$phq8, "1"= 0, "2"=1, "3"=2, "4"=3, .default = NULL)
+df$phq9<- recode(df$phq9, "1"= 0, "2"=1, "3"=2, "4"=3, .default = NULL)
+df$phq10<- recode(df$phq10, "1"= 0, "2"=1, "3"=2, "4"=3, .default = NULL)
+
+
+# phq_total(sum of phq1-phq9 ignoring NA)
+
+df$phq_total<- rowSums(cbind(df$phq1,df$phq2,df$phq3,df$phq4,df$phq5, df$phq6, df$phq7, df$phq8, df$phq9), na.rm=TRUE)
+
+
+# phq-9 categories (categories from literature supported PHQ scale)
+df$phq_cat[df$phq_total >= 0 & df$phq_total <= 4] <- 0 # no depression
+
+df$phq_cat[df$phq_total >= 5 & df$phq_total <= 9] <- 1 # mild depression
+
+df$phq_cat[df$phq_total >= 10 & df$phq_total <= 14] <- 2 # moderate depression
+
+df$phq_cat[df$phq_total >= 15 & df$phq_total <= 19] <- 3 # moderately severe depression
+
+df$phq_cat[df$phq_total >= 20 & df$phq_total <= 27] <- 4 # severe depression
+
+# PHQ binary (>= 10)
+
+df$phq_binary[df$phq_total>=10] <- 1 #depression
+
+df$phq_binary[df$phq_total<10] <- 0 #no depression
 
 
 # }}}
 
 # Anthropometric measurements tidying {{{====
 
+#new height in m variable 
 df$heightm<- df$height_cm/100
-
 
 #BMI category
 df$bmicat[df$bmi<23]<- 0
@@ -197,9 +233,6 @@ df$missinghtwt2[
 
 #Systolic BP average
 
-#this forms a new column with the sbp averages and ignores na. the new column made doing this does not work with the row binding function for some reason
-
-
 df$sbp_mean<- rowMeans(
 			df[,c(
 				"systolic_bp_first",
@@ -208,12 +241,7 @@ df$sbp_mean<- rowMeans(
 			)],
 			na.rm=TRUE)
 
-
-
-#Diastolic BP average
-
-#this forms a new column with the dbp average for cohort 1 and ignores na. same problem with row binding
-
+#Diastolic BP average-
 
 df$dbp_mean<- rowMeans(
 	df[,c(
@@ -269,7 +297,7 @@ df$hightg[df$lab_triglyc >= 150]<- 1
 df$hightg[df$lab_triglyc < 150]<- 0
 
 
-#mMetabolic syndrome
+#Metabolic syndrome
 
 #sums of metabolic syndrome variables
 df$metsyn_sum<- rowSums(
@@ -329,6 +357,7 @@ na_if(lab_zero_recode,0)
 #common variables for merging
 fvar <- c(
 	"male",
+	"age",
 	"agecat",
 	"educat",
 	"income",
@@ -338,6 +367,19 @@ fvar <- c(
 	"alcoholcurrent",
 	"alcoholever",
 	"alcoholcat3",
+	"phq1",
+	"phq2",
+	"phq3",
+	"phq4",
+	"phq5",
+	"phq6",
+	"phq7",
+	"phq8",
+	"phq9",
+	"phq10",
+	"phq_total",
+	"phq_cat",
+	"phq_binary",
 	"sedentary_greater5",
 	"employ3",
 	"weight_kg",
@@ -379,9 +421,5 @@ fvar <- c(
 #tidied data
 tidy_data<- df[fvar]
 
-#This combines the tidied variables with the similar and different columns
-
-combined_data_tidy<-bind_cols(combined_data, tidy_data)
-# }}}
 
 
